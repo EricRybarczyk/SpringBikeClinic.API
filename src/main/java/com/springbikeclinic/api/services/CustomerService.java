@@ -11,4 +11,6 @@ public interface CustomerService {
 
     Long saveNewCustomer(Customer customer);
 
+    Customer updateCustomer(Long id, Customer customer);
+
 }

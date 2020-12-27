@@ -1,5 +1,6 @@
 package com.springbikeclinic.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,11 +23,13 @@ public class Bike {
     private String description;
     private BikeType bikeType;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
     private Customer owner;
 
-    @OneToMany(mappedBy = "bike")
+    @JsonIgnore
+    @OneToMany(mappedBy = "bike", fetch = FetchType.LAZY)
     private Set<WorkOrder> workOrders = new HashSet<>();
 
     // TODO: consider that the remaining fields may need to be optional/nullable or contain default values that would indicate unspecified

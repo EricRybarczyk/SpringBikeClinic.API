@@ -40,7 +40,7 @@ public class DataInitializer implements CommandLineRunner {
             customer.setFirstName(firstName);
             customer.setLastName(lastName);
             customer.setEmailAddress(String.format("%s.%s@domain.com", firstName, lastName));
-            customer.setPhoneNumber(faker.phoneNumber().cellPhone());
+            customer.setPhoneNumber(getRandomPhoneNumber());
             customer.setCreatedDate(LocalDate.now().minusDays(daysBack));
 
             Customer savedCustomer = customerRepository.save(customer);
@@ -65,14 +65,18 @@ public class DataInitializer implements CommandLineRunner {
             mechanic.setFirstName(firstName);
             mechanic.setLastName(lastName);
             mechanic.setEmailAddress(String.format("%s.%s@domain.com", firstName, lastName));
-            mechanic.setPhoneNumber(faker.phoneNumber().cellPhone());
+            mechanic.setPhoneNumber(getRandomPhoneNumber());
             mechanic.setHireDate(LocalDate.now().minusMonths(monthsBack).minusDays(daysBack));
             mechanic.setEmploymentStatus(EmploymentStatus.ACTIVE);
             mechanicRepository.save(mechanic);
         }
 
-
         log.info("******* Completed data initializer process.");
     }
 
+    private String getRandomPhoneNumber() {
+        int areaCode = ThreadLocalRandom.current().nextInt(201, 999);
+        int phone = ThreadLocalRandom.current().nextInt(2341234, 9999999);
+        return String.valueOf(areaCode) + phone;
+    }
 }

@@ -30,4 +30,17 @@ public class CustomerServiceImpl implements CustomerService {
         return savedCustomer.getId();
     }
 
+    @Override
+    public Customer updateCustomer(Long id, Customer customer) {
+        Customer existingCustomer = customerRepository.findById(id)
+                .orElseThrow(() -> new CustomerNotFoundException(String.format("Customer not found for ID %s", id)));
+        existingCustomer.setFirstName(customer.getFirstName());
+        existingCustomer.setLastName(customer.getLastName());
+        existingCustomer.setEmailAddress(customer.getEmailAddress());
+        existingCustomer.setPhoneNumber(customer.getPhoneNumber());
+        existingCustomer.setCreatedDate(customer.getCreatedDate());
+        customerRepository.save(existingCustomer);
+        return existingCustomer;
+    }
+
 }

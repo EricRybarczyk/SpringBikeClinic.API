@@ -43,6 +43,12 @@ public class CustomerController {
         return ResponseEntity.created(uri).build();
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Customer> updateExistingCustomer(@PathVariable("id") Long id, @Valid @RequestBody Customer customer) {
+        Customer updatedCustomer = customerService.updateCustomer(id, customer);
+        return ResponseEntity.ok(updatedCustomer);
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationException(MethodArgumentNotValidException ex) {

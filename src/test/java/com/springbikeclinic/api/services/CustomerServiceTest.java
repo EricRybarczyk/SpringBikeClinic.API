@@ -73,4 +73,32 @@ class CustomerServiceTest {
         verify(customerRepository, times(1)).save(newCustomer);
     }
 
+    @Test
+    void updateValidExistingCustomerReturnsUpdatedCustomerObject() throws Exception {
+        Customer customer = CustomerTestData.generateCustomer();
+        customer.setId(1L);
+        when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
+
+        String modifiedFirstName = "NewFirst";
+        String modifiedLastName = "NewLast";
+        String modifiedEmail = "NewEmail@domain.com";
+        String modifiedPhone = "3334445566";
+        Customer modifiedCustomer = new Customer();
+        modifiedCustomer.setFirstName(modifiedFirstName);
+        modifiedCustomer.setLastName(modifiedLastName);
+        modifiedCustomer.setEmailAddress(modifiedEmail);
+        modifiedCustomer.setPhoneNumber(modifiedPhone);
+
+        Customer updatedCustomer = customerService.updateCustomer(1L, modifiedCustomer);
+
+        assertThat(updatedCustomer.getId()).isEqualTo(1L);
+        assertThat(updatedCustomer.getFirstName()).isEqualTo(modifiedFirstName);
+        assertThat(updatedCustomer.getLastName()).isEqualTo(modifiedLastName);
+        assertThat(updatedCustomer.getEmailAddress()).isEqualTo(modifiedEmail);
+        assertThat(updatedCustomer.getPhoneNumber()).isEqualTo(modifiedPhone);
+
+        verify(customerRepository, times(1)).findById(customer.getId());
+        verify(customerRepository, times(1)).save(any(Customer.class));
+    }
+
 }

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.time.LocalDate;
@@ -24,7 +25,7 @@ public class Customer extends Person {
     @OneToMany(mappedBy = "owner")
     private Set<Bike> bikes = new HashSet<>();
 
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
     private Set<WorkOrder> workOrders = new HashSet<>();
 
 }
