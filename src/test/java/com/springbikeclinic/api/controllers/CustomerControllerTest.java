@@ -2,6 +2,7 @@ package com.springbikeclinic.api.controllers;
 
 import com.springbikeclinic.api.domain.Customer;
 import com.springbikeclinic.api.helpers.CustomerTestData;
+import com.springbikeclinic.api.services.CustomerNotFoundException;
 import com.springbikeclinic.api.services.CustomerService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,8 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -42,6 +44,8 @@ class CustomerControllerTest {
                 .andExpect(jsonPath("$[0].lastName", is(customerList.get(0).getLastName())))
                 .andExpect(jsonPath("$[0].phoneNumber", is(customerList.get(0).getPhoneNumber())))
                 .andExpect(jsonPath("$[0].emailAddress", is(customerList.get(0).getEmailAddress())));
+
+        verify(customerService, times(1)).getAllCustomers();
     }
 
     @Test
@@ -57,6 +61,18 @@ class CustomerControllerTest {
                 .andExpect(jsonPath("$.lastName", is(customer.getLastName())))
                 .andExpect(jsonPath("$.phoneNumber", is(customer.getPhoneNumber())))
                 .andExpect(jsonPath("$.emailAddress", is(customer.getEmailAddress())));
+
+        verify(customerService, times(1)).getCustomerById(1L);
+    }
+
+    @Test
+    void getCustomerWithInvalidIdShouldReturn404() throws Exception {
+        when(customerService.getCustomerById(anyLong())).thenThrow(new CustomerNotFoundException("Customer not found."));
+
+        mockMvc.perform(get(API_BASE_PATH + "9999"))
+                .andExpect(status().isNotFound());
+
+        verify(customerService, times(1)).getCustomerById(9999L);
     }
 
 }

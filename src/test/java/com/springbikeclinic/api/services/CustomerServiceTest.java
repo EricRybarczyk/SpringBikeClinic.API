@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -50,6 +51,13 @@ class CustomerServiceTest {
         assertThat(result.getFirstName()).isEqualTo(customer.getFirstName());
 
         verify(customerRepository, times(1)).findById(anyLong());
+    }
+
+    @Test
+    void getCustomerWithInvalidIdShouldThrowCustomerNotFoundException() throws Exception {
+        when(customerRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(CustomerNotFoundException.class, () -> customerService.getCustomerById(999L));
     }
 
 }
