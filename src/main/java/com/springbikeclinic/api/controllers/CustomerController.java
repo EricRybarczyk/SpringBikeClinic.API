@@ -1,7 +1,5 @@
 package com.springbikeclinic.api.controllers;
 
-import com.springbikeclinic.api.commands.CustomerCommand;
-import com.springbikeclinic.api.converters.CustomerCommandToCustomer;
 import com.springbikeclinic.api.domain.Customer;
 import com.springbikeclinic.api.services.CustomerService;
 import org.springframework.http.HttpStatus;
@@ -21,11 +19,9 @@ import java.util.Map;
 public class CustomerController {
 
     private final CustomerService customerService;
-    private final CustomerCommandToCustomer customerCommandToCustomer;
 
-    public CustomerController(CustomerService customerService, CustomerCommandToCustomer customerCommandToCustomer) {
+    public CustomerController(CustomerService customerService) {
         this.customerService = customerService;
-        this.customerCommandToCustomer = customerCommandToCustomer;
     }
 
     @GetMapping
@@ -39,8 +35,8 @@ public class CustomerController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createNewCustomer(@Valid @RequestBody CustomerCommand customerCommand, UriComponentsBuilder uriComponentsBuilder) {
-        Long customerId = customerService.saveNewCustomer(customerCommandToCustomer.convert(customerCommand));
+    public ResponseEntity<Void> createNewCustomer(@Valid @RequestBody Customer customer, UriComponentsBuilder uriComponentsBuilder) {
+        Long customerId = customerService.saveNewCustomer(customer);
 
         URI uri = uriComponentsBuilder.path("/api/customers/{customerId}").buildAndExpand(customerId).toUri();
 

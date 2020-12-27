@@ -1,7 +1,6 @@
 package com.springbikeclinic.api.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.springbikeclinic.api.commands.CustomerCommand;
 import com.springbikeclinic.api.domain.Customer;
 import com.springbikeclinic.api.helpers.CustomerTestData;
 import com.springbikeclinic.api.services.CustomerNotFoundException;
@@ -84,11 +83,11 @@ class CustomerControllerTest {
     @Test
     void postNewCustomerShouldCreateNewResource() throws Exception {
         when(customerService.saveNewCustomer(any(Customer.class))).thenReturn(1L);
-        CustomerCommand newCustomerCommand = CustomerTestData.getNewCustomerCommand();
+        Customer newCustomer = CustomerTestData.generateCustomer();
 
         mockMvc.perform(post(API_BASE_PATH)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(newCustomerCommand)))
+                .content(objectMapper.writeValueAsString(newCustomer)))
                 .andExpect(status().isCreated())
                 .andExpect(header().exists("Location"))
                 .andExpect(header().string("Location", "http://localhost/api/customers/1"));
