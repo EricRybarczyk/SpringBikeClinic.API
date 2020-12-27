@@ -1,5 +1,7 @@
 package com.springbikeclinic.api.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.springbikeclinic.api.commands.CustomerCommand;
 import com.springbikeclinic.api.domain.Customer;
 import com.springbikeclinic.api.helpers.CustomerTestData;
 import com.springbikeclinic.api.services.CustomerNotFoundException;
@@ -17,6 +19,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest
@@ -26,6 +29,9 @@ class CustomerControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @MockBean
     private CustomerService customerService;
@@ -73,6 +79,21 @@ class CustomerControllerTest {
                 .andExpect(status().isNotFound());
 
         verify(customerService, times(1)).getCustomerById(9999L);
+    }
+
+    @Test
+    void postNewCustomerShouldCreateNewResource() throws Exception {
+        when(customerService.saveNewCustomer(any(Customer.class))).thenReturn(1L);
+        CustomerCommand newCustomerCommand = CustomerTestData.getNewCustomerCommand();
+
+        mockMvc.perform(post(API_BASE_PATH)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newCustomerCommand)))
+                .andExpect(status().isCreated())
+                .andExpect(header().exists("Location"))
+                .andExpect(header().string("Location", "http://localhost/api/customers/1"));
+
+        verify(customerService, times(1)).saveNewCustomer(any(Customer.class));
     }
 
 }

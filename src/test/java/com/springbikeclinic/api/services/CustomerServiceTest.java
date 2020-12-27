@@ -60,4 +60,17 @@ class CustomerServiceTest {
         assertThrows(CustomerNotFoundException.class, () -> customerService.getCustomerById(999L));
     }
 
+    @Test
+    void saveValidNewCustomerReturnsCustomerObject() throws Exception {
+        Customer savedCustomer = CustomerTestData.generateCustomer();
+        savedCustomer.setId(99L);
+        when(customerRepository.save(any(Customer.class))).thenReturn(savedCustomer);
+
+        Customer newCustomer = CustomerTestData.generateCustomer();
+        Long savedCustomerId = customerService.saveNewCustomer(newCustomer);
+
+        assertThat(savedCustomerId).isNotNull().isEqualTo(99L);
+        verify(customerRepository, times(1)).save(newCustomer);
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.springbikeclinic.api.helpers;
 
 import com.github.javafaker.Faker;
+import com.springbikeclinic.api.commands.CustomerCommand;
 import com.springbikeclinic.api.domain.Customer;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -32,6 +33,16 @@ public class CustomerTestData {
         customer.setEmailAddress(String.format("%s.%s@domain.com", firstName, lastName));
         customer.setPhoneNumber(faker.phoneNumber().cellPhone());
         customer.setCreatedDate(LocalDate.now().minusDays(daysBack));
+        return customer;
+    }
+
+    public static CustomerCommand getNewCustomerCommand() {
+        CustomerCommand customer = new CustomerCommand();
+        customer.setFirstName("Firsty");
+        customer.setLastName("Lasty");
+        customer.setEmailAddress("FirstyLasty@domain.com");
+        customer.setPhoneNumber("4045551212");
+        customer.setCreatedDate(LocalDate.now().minusDays(1));
         return customer;
     }
 }

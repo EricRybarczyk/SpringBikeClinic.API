@@ -26,4 +26,5 @@ public class Customer extends Person {
 
     @OneToMany(mappedBy = "customer")
     private Set<WorkOrder> workOrders = new HashSet<>();
+
 }

@@ -9,4 +9,6 @@ public interface CustomerService {
 
     Customer getCustomerById(Long id);
 
+    Long saveNewCustomer(Customer customer);
+
 }
