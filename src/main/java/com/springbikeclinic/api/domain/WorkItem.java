@@ -25,7 +25,10 @@ public class WorkItem {
 
     private LocalDateTime createdDateTime;
     private LocalDateTime completedDateTime;
+
+    @Enumerated(value = EnumType.STRING)
     private WorkItemStatus workItemStatus;
+
     private String description;
     private String mechanicNotes;
 

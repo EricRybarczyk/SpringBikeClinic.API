@@ -21,6 +21,8 @@ public class Bike {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String description;
+
+    @Enumerated(value = EnumType.STRING)
     private BikeType bikeType;
 
     @JsonIgnore

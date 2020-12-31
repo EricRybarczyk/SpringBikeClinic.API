@@ -23,6 +23,8 @@ public class WorkOrder {
     private Long id;
     private LocalDateTime createdDateTime;
     private LocalDateTime submittedDateTime;
+
+    @Enumerated(value = EnumType.STRING)
     private WorkOrderStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
