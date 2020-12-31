@@ -16,22 +16,33 @@ public class MechanicServiceImpl implements MechanicService {
 
     @Override
     public List<Mechanic> getAllMechanics() {
-        return null;
+        return mechanicRepository.findAll();
     }
 
     @Override
     public Mechanic getMechanicById(Long id) {
-        return null;
+        return mechanicRepository.findById(id).orElseThrow( () -> new MechanicNotFoundException(String.format("Mechanic not found for ID %s", id)));
     }
 
     @Override
     public Long saveNewMechanic(Mechanic mechanic) {
-        return null;
+        Mechanic savedMechanic = mechanicRepository.save(mechanic);
+        return savedMechanic.getId();
     }
 
     @Override
     public Mechanic updateMechanic(Long id, Mechanic mechanic) {
-        return null;
+        Mechanic existingMechanic = mechanicRepository.findById(id)
+                .orElseThrow( () -> new MechanicNotFoundException(String.format("Mechanic not found for ID %s", id)));
+
+        existingMechanic.setFirstName(mechanic.getFirstName());
+        existingMechanic.setLastName(mechanic.getLastName());
+        existingMechanic.setPhoneNumber(mechanic.getPhoneNumber());
+        existingMechanic.setEmailAddress(mechanic.getEmailAddress());
+        existingMechanic.setEmploymentStatus(mechanic.getEmploymentStatus());
+        existingMechanic.setHireDate(mechanic.getHireDate());
+        mechanicRepository.save(existingMechanic);
+        return existingMechanic;
     }
 
 }

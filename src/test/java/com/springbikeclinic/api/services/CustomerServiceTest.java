@@ -61,7 +61,7 @@ class CustomerServiceTest {
     }
 
     @Test
-    void saveValidNewCustomerReturnsCustomerObject() throws Exception {
+    void saveValidNewCustomerReturnsCustomerId() throws Exception {
         Customer savedCustomer = CustomerTestData.generateCustomer();
         savedCustomer.setId(99L);
         when(customerRepository.save(any(Customer.class))).thenReturn(savedCustomer);

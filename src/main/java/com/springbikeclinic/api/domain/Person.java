@@ -1,5 +1,6 @@
 package com.springbikeclinic.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.GeneratedValue;
@@ -21,6 +22,7 @@ public abstract class Person {
     private String emailAddress;
     private String phoneNumber;
 
+    @JsonIgnore
     public boolean isNew() {
         return this.id == null;
     }
