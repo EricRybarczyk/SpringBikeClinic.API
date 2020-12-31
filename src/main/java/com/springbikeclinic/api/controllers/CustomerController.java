@@ -2,17 +2,12 @@ package com.springbikeclinic.api.controllers;
 
 import com.springbikeclinic.api.domain.Customer;
 import com.springbikeclinic.api.services.CustomerService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/customers")
@@ -47,17 +42,5 @@ public class CustomerController {
     public ResponseEntity<Customer> updateExistingCustomer(@PathVariable("id") Long id, @Valid @RequestBody Customer customer) {
         Customer updatedCustomer = customerService.updateCustomer(id, customer);
         return ResponseEntity.ok(updatedCustomer);
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationException(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach( (error) -> {
-            String field = ((FieldError) error).getField();
-            String validationMessage = error.getDefaultMessage();
-            errors.put(field, validationMessage);
-        });
-        return errors;
     }
 }
