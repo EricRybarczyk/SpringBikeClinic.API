@@ -1,0 +1,50 @@
+package com.springbikeclinic.api.services;
+
+import com.springbikeclinic.api.domain.WorkOrder;
+import com.springbikeclinic.api.helpers.WorkOrderTestData;
+import com.springbikeclinic.api.repositories.WorkOrderRepository;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+class WorkOrderServiceTest {
+
+    @Mock
+    private WorkOrderRepository workOrderRepository;
+
+    @InjectMocks
+    private WorkOrderServiceImpl workOrderService;
+
+    @Test
+    void getWorkOrderWithValidIdReturnsWorkOrderObject() throws Exception {
+        WorkOrder workOrder = WorkOrderTestData.generatePendingWorkOrder();
+        workOrder.setId(1L);
+        when(workOrderRepository.findById(anyLong())).thenReturn(Optional.of(workOrder));
+
+        WorkOrder result = workOrderService.getWorkOrderById(1L);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getId()).isEqualTo(1L);
+        assertThat(result.getCustomerNotes()).isEqualTo(workOrder.getCustomerNotes());
+
+        verify(workOrderRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void getWorkOrderWithInvalidIdShouldThrowWorkOrderNotFoundException() throws Exception {
+        when(workOrderRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(WorkOrderNotFoundException.class, () -> workOrderService.getWorkOrderById(9999L));
+
+    }
+
+}
