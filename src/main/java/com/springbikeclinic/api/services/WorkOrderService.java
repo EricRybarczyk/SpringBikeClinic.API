@@ -9,4 +9,6 @@ public interface WorkOrderService {
     //List<WorkOrder> getOpenWorkOrders();
 
     WorkOrder getWorkOrderById(Long id);
+
+    Long save(WorkOrder workOrder);
 }

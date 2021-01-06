@@ -1,5 +1,6 @@
 package com.springbikeclinic.api.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springbikeclinic.api.domain.WorkOrder;
 import com.springbikeclinic.api.helpers.WorkOrderTestData;
 import com.springbikeclinic.api.services.WorkOrderNotFoundException;
@@ -15,6 +16,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(WorkOrderController.class)
@@ -24,6 +26,9 @@ class WorkOrderControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @MockBean
     private WorkOrderService workOrderService;
@@ -51,6 +56,21 @@ class WorkOrderControllerTest {
                 .andExpect(status().isNotFound());
 
         verify(workOrderService, times(1)).getWorkOrderById(9999L);
+    }
+
+    @Test
+    void postValidWorkOrderShouldCreateNewResource() throws Exception {
+        when(workOrderService.save(any(WorkOrder.class))).thenReturn(1L);
+        WorkOrder workOrder = WorkOrderTestData.generatePendingWorkOrder();
+
+        mockMvc.perform(post(API_BASE_PATH)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(workOrder)))
+                .andExpect(status().isCreated())
+                .andExpect(header().exists("Location"))
+                .andExpect(header().string("Location", "http://localhost/api/workorders/1"));
+
+        verify(workOrderService, times(1)).save(any(WorkOrder.class));
     }
 
 }

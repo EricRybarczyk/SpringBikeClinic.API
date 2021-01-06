@@ -44,7 +44,19 @@ class WorkOrderServiceTest {
         when(workOrderRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         Assertions.assertThrows(WorkOrderNotFoundException.class, () -> workOrderService.getWorkOrderById(9999L));
+    }
 
+    @Test
+    void saveValidWorkOrderReturnsWorkOrderId() throws Exception {
+        WorkOrder savedWorkOrder = WorkOrderTestData.generatePendingWorkOrder();
+        savedWorkOrder.setId(99L);
+        when(workOrderRepository.save(any(WorkOrder.class))).thenReturn(savedWorkOrder);
+
+        WorkOrder newWorkOrder = WorkOrderTestData.generatePendingWorkOrder();
+        Long workOrderId = workOrderService.save(newWorkOrder);
+
+        assertThat(workOrderId).isNotNull().isEqualTo(99L);
+        verify(workOrderRepository, times(1)).save(newWorkOrder);
     }
 
 }

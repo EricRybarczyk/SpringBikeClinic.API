@@ -19,4 +19,10 @@ public class WorkOrderServiceImpl implements WorkOrderService {
                 .orElseThrow( () -> new WorkOrderNotFoundException(String.format("Work Order %s was not found", id)));
     }
 
+    @Override
+    public Long save(WorkOrder workOrder) {
+        WorkOrder savedWorkOrder = workOrderRepository.save(workOrder);
+        return savedWorkOrder.getId();
+    }
+
 }
