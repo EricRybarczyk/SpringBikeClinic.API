@@ -1,16 +1,16 @@
 package com.springbikeclinic.api.services;
 
-import com.springbikeclinic.api.domain.Customer;
+import com.springbikeclinic.api.dto.CustomerDto;
 import java.util.List;
 
 public interface CustomerService {
 
-    List<Customer> getAllCustomers();
+    List<CustomerDto> getAllCustomers();
 
-    Customer getCustomerById(Long id);
+    CustomerDto getCustomerById(Long id);
 
-    Long saveNewCustomer(Customer customer);
+    Long saveNewCustomer(CustomerDto customer);
 
-    Customer updateCustomer(Long id, Customer customer);
+    CustomerDto updateCustomer(Long id, CustomerDto customer);
 
 }

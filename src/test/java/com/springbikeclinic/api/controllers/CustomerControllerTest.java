@@ -2,6 +2,7 @@ package com.springbikeclinic.api.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springbikeclinic.api.domain.Customer;
+import com.springbikeclinic.api.dto.CustomerDto;
 import com.springbikeclinic.api.helpers.CustomerTestData;
 import com.springbikeclinic.api.services.CustomerNotFoundException;
 import com.springbikeclinic.api.services.CustomerService;
@@ -13,7 +14,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -36,7 +36,7 @@ class CustomerControllerTest {
     private ObjectMapper objectMapper;
 
     @Captor
-    private ArgumentCaptor<Customer> argumentCaptor;
+    private ArgumentCaptor<CustomerDto> argumentCaptor;
 
     @MockBean
     private CustomerService customerService;
@@ -44,7 +44,7 @@ class CustomerControllerTest {
 
     @Test
     void allCustomersEndpointShouldReturnTwoCustomers() throws Exception {
-        List<Customer> customerList = CustomerTestData.getCustomerList(2);
+        List<CustomerDto> customerList = CustomerTestData.getCustomerDtoList(2);
         when(customerService.getAllCustomers()).thenReturn(customerList);
 
         mockMvc.perform(get(API_BASE_PATH))
@@ -61,7 +61,7 @@ class CustomerControllerTest {
 
     @Test
     void getCustomerWithIdOneShouldReturnValidCustomer() throws Exception {
-        Customer customer = CustomerTestData.generateCustomer();
+        CustomerDto customer = CustomerTestData.generateCustomerDto();
         customer.setId(1L);
         when(customerService.getCustomerById(1L)).thenReturn(customer);
 
@@ -88,7 +88,7 @@ class CustomerControllerTest {
 
     @Test
     void postNewCustomerShouldCreateNewResource() throws Exception {
-        when(customerService.saveNewCustomer(any(Customer.class))).thenReturn(1L);
+        when(customerService.saveNewCustomer(any(CustomerDto.class))).thenReturn(1L);
         Customer newCustomer = CustomerTestData.generateCustomer();
 
         mockMvc.perform(post(API_BASE_PATH)
@@ -98,12 +98,12 @@ class CustomerControllerTest {
                 .andExpect(header().exists("Location"))
                 .andExpect(header().string("Location", "http://localhost/api/customers/1"));
 
-        verify(customerService, times(1)).saveNewCustomer(any(Customer.class));
+        verify(customerService, times(1)).saveNewCustomer(any(CustomerDto.class));
     }
 
     @Test
     void updateCustomerWithValidIdShouldUpdateCustomerDetails() throws Exception {
-        Customer existingCustomer = CustomerTestData.generateCustomer();
+        CustomerDto existingCustomer = CustomerTestData.generateCustomerDto();
         existingCustomer.setId(1L);
 
         when(customerService.updateCustomer(eq(1L), argumentCaptor.capture()))
@@ -116,13 +116,13 @@ class CustomerControllerTest {
                 .andExpect(jsonPath("$.firstName", is(existingCustomer.getFirstName())))
                 .andExpect(jsonPath("$.lastName", is(existingCustomer.getLastName())))
                 .andExpect(jsonPath("$.phoneNumber", is(existingCustomer.getPhoneNumber())))
-                .andExpect(jsonPath("$.emailAddress", is(existingCustomer.getEmailAddress())))
-                .andExpect(jsonPath("$.createdDate", is(existingCustomer.getCreatedDate().format(DateTimeFormatter.ISO_LOCAL_DATE))));
+                .andExpect(jsonPath("$.emailAddress", is(existingCustomer.getEmailAddress())));
+                //.andExpect(jsonPath("$.createdDate", is(existingCustomer.getCreatedDate().format(DateTimeFormatter.ISO_LOCAL_DATE))));
 
         assertThat(argumentCaptor.getValue().getId(), is(existingCustomer.getId()));
         assertThat(argumentCaptor.getValue().getFirstName(), is(existingCustomer.getFirstName()));
         assertThat(argumentCaptor.getValue().getLastName(), is(existingCustomer.getLastName()));
-        verify(customerService, times(1)).updateCustomer(anyLong(), any(Customer.class));
+        verify(customerService, times(1)).updateCustomer(anyLong(), any(CustomerDto.class));
     }
 
 }

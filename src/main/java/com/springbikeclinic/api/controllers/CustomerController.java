@@ -1,6 +1,6 @@
 package com.springbikeclinic.api.controllers;
 
-import com.springbikeclinic.api.domain.Customer;
+import com.springbikeclinic.api.dto.CustomerDto;
 import com.springbikeclinic.api.services.CustomerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,17 +20,17 @@ public class CustomerController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Customer>> getAllCustomers() {
+    public ResponseEntity<List<CustomerDto>> getAllCustomers() {
         return ResponseEntity.ok(customerService.getAllCustomers());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Customer> getCustomerById(@PathVariable("id") Long id) {
+    public ResponseEntity<CustomerDto> getCustomerById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(customerService.getCustomerById(id));
     }
 
     @PostMapping
-    public ResponseEntity<Void> createNewCustomer(@Valid @RequestBody Customer customer, UriComponentsBuilder uriComponentsBuilder) {
+    public ResponseEntity<Void> createNewCustomer(@Valid @RequestBody CustomerDto customer, UriComponentsBuilder uriComponentsBuilder) {
         Long customerId = customerService.saveNewCustomer(customer);
 
         URI uri = uriComponentsBuilder.path("/api/customers/{customerId}").buildAndExpand(customerId).toUri();
@@ -39,8 +39,8 @@ public class CustomerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Customer> updateExistingCustomer(@PathVariable("id") Long id, @Valid @RequestBody Customer customer) {
-        Customer updatedCustomer = customerService.updateCustomer(id, customer);
+    public ResponseEntity<CustomerDto> updateExistingCustomer(@PathVariable("id") Long id, @Valid @RequestBody CustomerDto customer) {
+        CustomerDto updatedCustomer = customerService.updateCustomer(id, customer);
         return ResponseEntity.ok(updatedCustomer);
     }
 }
