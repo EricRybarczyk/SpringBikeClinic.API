@@ -2,6 +2,7 @@ package com.springbikeclinic.api.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springbikeclinic.api.domain.Mechanic;
+import com.springbikeclinic.api.dto.MechanicDto;
 import com.springbikeclinic.api.helpers.MechanicTestData;
 import com.springbikeclinic.api.services.MechanicNotFoundException;
 import com.springbikeclinic.api.services.MechanicService;
@@ -35,7 +36,7 @@ class MechanicControllerTest {
     private ObjectMapper objectMapper;
 
     @Captor
-    private ArgumentCaptor<Mechanic> argumentCaptor;
+    private ArgumentCaptor<MechanicDto> argumentCaptor;
 
     @MockBean
     private MechanicService mechanicService;
@@ -43,7 +44,7 @@ class MechanicControllerTest {
 
     @Test
     void allMechanicsEndpointShouldReturnTwoMechanics() throws Exception {
-        List<Mechanic> mechanicList = MechanicTestData.getMechanicList(2);
+        List<MechanicDto> mechanicList = MechanicTestData.getMechanicDtoList(2);
         when(mechanicService.getAllMechanics()).thenReturn(mechanicList);
 
         mockMvc.perform(get(API_BASE_PATH))
@@ -60,7 +61,7 @@ class MechanicControllerTest {
 
     @Test
     void getMechanicWithIdOneShouldReturnValidMechanic() throws Exception {
-        Mechanic mechanic = MechanicTestData.generateMechanic();
+        MechanicDto mechanic = MechanicTestData.generateMechanicDto();
         mechanic.setId(1L);
         when(mechanicService.getMechanicById(1L)).thenReturn(mechanic);
 
@@ -87,7 +88,7 @@ class MechanicControllerTest {
 
     @Test
     void postNewMechanicShouldCreateNewResource() throws Exception {
-        when(mechanicService.saveNewMechanic(any(Mechanic.class))).thenReturn(1L);
+        when(mechanicService.saveNewMechanic(any(MechanicDto.class))).thenReturn(1L);
         Mechanic newMechanic = MechanicTestData.generateMechanic();
 
         mockMvc.perform(post(API_BASE_PATH)
@@ -97,12 +98,12 @@ class MechanicControllerTest {
                 .andExpect(header().exists("Location"))
                 .andExpect(header().string("Location", "http://localhost/api/mechanics/1"));
 
-        verify(mechanicService, times(1)).saveNewMechanic(any(Mechanic.class));
+        verify(mechanicService, times(1)).saveNewMechanic(any(MechanicDto.class));
     }
 
     @Test
     void updateMechanicWithValidIdShouldUpdateMechanicDetails() throws Exception {
-        Mechanic existingMechanic = MechanicTestData.generateMechanic();
+        MechanicDto existingMechanic = MechanicTestData.generateMechanicDto();
         existingMechanic.setId(1L);
 
         when(mechanicService.updateMechanic(eq(1L), argumentCaptor.capture()))
@@ -121,7 +122,7 @@ class MechanicControllerTest {
         assertThat(argumentCaptor.getValue().getId(), is(existingMechanic.getId()));
         assertThat(argumentCaptor.getValue().getFirstName(), is(existingMechanic.getFirstName()));
         assertThat(argumentCaptor.getValue().getLastName(), is(existingMechanic.getLastName()));
-        verify(mechanicService, times(1)).updateMechanic(anyLong(), any(Mechanic.class));
+        verify(mechanicService, times(1)).updateMechanic(anyLong(), any(MechanicDto.class));
     }
 
 }

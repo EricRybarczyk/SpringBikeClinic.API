@@ -1,16 +1,16 @@
 package com.springbikeclinic.api.services;
 
-import com.springbikeclinic.api.domain.Mechanic;
+import com.springbikeclinic.api.dto.MechanicDto;
 import java.util.List;
 
 public interface MechanicService {
 
-    List<Mechanic> getAllMechanics();
+    List<MechanicDto> getAllMechanics();
 
-    Mechanic getMechanicById(Long id);
+    MechanicDto getMechanicById(Long id);
 
-    Long saveNewMechanic(Mechanic mechanic);
+    Long saveNewMechanic(MechanicDto mechanic);
 
-    Mechanic updateMechanic(Long id, Mechanic mechanic);
+    MechanicDto updateMechanic(Long id, MechanicDto mechanic);
 
 }

@@ -48,6 +48,7 @@ class CustomerServiceTest {
     void getAllCustomersWithEmptyRepositoryReturnsEmptyList() throws Exception {
         when(customerRepository.findAll()).thenReturn(new ArrayList<>());
 
+        // purpose is to make sure the mapping logic in the Service method call works even with an empty source list
         List<CustomerDto> result = customerService.getAllCustomers();
 
         assertThat(result).isNotNull();

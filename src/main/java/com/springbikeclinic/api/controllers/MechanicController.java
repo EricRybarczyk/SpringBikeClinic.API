@@ -1,6 +1,6 @@
 package com.springbikeclinic.api.controllers;
 
-import com.springbikeclinic.api.domain.Mechanic;
+import com.springbikeclinic.api.dto.MechanicDto;
 import com.springbikeclinic.api.services.MechanicService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,17 +20,17 @@ public class MechanicController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Mechanic>> getAllMechanics() {
+    public ResponseEntity<List<MechanicDto>> getAllMechanics() {
         return ResponseEntity.ok(mechanicService.getAllMechanics());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Mechanic> getMechanic(@PathVariable("id") Long id) {
+    public ResponseEntity<MechanicDto> getMechanic(@PathVariable("id") Long id) {
         return ResponseEntity.ok(mechanicService.getMechanicById(id));
     }
 
     @PostMapping
-    public ResponseEntity<Void> createNewMechanic(@Valid @RequestBody Mechanic mechanic, UriComponentsBuilder uriComponentsBuilder) {
+    public ResponseEntity<Void> createNewMechanic(@Valid @RequestBody MechanicDto mechanic, UriComponentsBuilder uriComponentsBuilder) {
         Long mechanicId = mechanicService.saveNewMechanic(mechanic);
 
         URI uri = uriComponentsBuilder.path("/api/mechanics/{customerId}").buildAndExpand(mechanicId).toUri();
@@ -39,8 +39,8 @@ public class MechanicController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Mechanic> updateExistingMechanic(@PathVariable("id") Long id, @Valid @RequestBody Mechanic mechanic) {
-        Mechanic updatedMechanic = mechanicService.updateMechanic(id, mechanic);
+    public ResponseEntity<MechanicDto> updateExistingMechanic(@PathVariable("id") Long id, @Valid @RequestBody MechanicDto mechanic) {
+        MechanicDto updatedMechanic = mechanicService.updateMechanic(id, mechanic);
         return ResponseEntity.ok(updatedMechanic);
     }
 }
