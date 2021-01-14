@@ -2,6 +2,7 @@ package com.springbikeclinic.api.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springbikeclinic.api.domain.WorkOrder;
+import com.springbikeclinic.api.dto.WorkOrderDto;
 import com.springbikeclinic.api.helpers.WorkOrderTestData;
 import com.springbikeclinic.api.services.WorkOrderNotFoundException;
 import com.springbikeclinic.api.services.WorkOrderService;
@@ -36,7 +37,7 @@ class WorkOrderControllerTest {
 
     @Test
     void getWorkOrderWithValidIdShouldReturnWorkOrder() throws Exception {
-        WorkOrder workOrder = WorkOrderTestData.generatePendingWorkOrder();
+        WorkOrderDto workOrder = WorkOrderTestData.generatePendingWorkOrderDto();
         when(workOrderService.getWorkOrderById(anyLong())).thenReturn(workOrder);
 
         mockMvc.perform(get(API_BASE_PATH + "1"))
@@ -60,7 +61,7 @@ class WorkOrderControllerTest {
 
     @Test
     void postValidWorkOrderShouldCreateNewResource() throws Exception {
-        when(workOrderService.save(any(WorkOrder.class))).thenReturn(1L);
+        when(workOrderService.save(any(WorkOrderDto.class))).thenReturn(1L);
         WorkOrder workOrder = WorkOrderTestData.generatePendingWorkOrder();
 
         mockMvc.perform(post(API_BASE_PATH)
@@ -70,7 +71,7 @@ class WorkOrderControllerTest {
                 .andExpect(header().exists("Location"))
                 .andExpect(header().string("Location", "http://localhost/api/workorders/1"));
 
-        verify(workOrderService, times(1)).save(any(WorkOrder.class));
+        verify(workOrderService, times(1)).save(any(WorkOrderDto.class));
     }
 
 }

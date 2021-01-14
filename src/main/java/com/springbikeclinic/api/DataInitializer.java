@@ -95,6 +95,14 @@ public class DataInitializer implements CommandLineRunner {
             workOrder.setCustomer(customer);
             workOrder.setBike(customer.getBikes().stream().findAny().orElseThrow());
             workOrder.setCustomerNotes(faker.lorem().sentence(12));
+
+            WorkItem workItem = new WorkItem();
+            workItem.setStatus(WorkItemStatus.PENDING);
+            workItem.setCreatedDateTime(LocalDateTime.now());
+            workItem.setDescription(faker.lorem().sentence(5));
+            workItem.setWorkOrder(workOrder);
+            workOrder.getWorkItems().add(workItem);
+
             workOrderRepository.save(workOrder);
         }
 

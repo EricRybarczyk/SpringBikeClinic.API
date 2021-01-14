@@ -1,7 +1,9 @@
 package com.springbikeclinic.api.services;
 
 import com.springbikeclinic.api.domain.WorkOrder;
+import com.springbikeclinic.api.dto.WorkOrderDto;
 import com.springbikeclinic.api.helpers.WorkOrderTestData;
+import com.springbikeclinic.api.mappers.WorkOrderMapper;
 import com.springbikeclinic.api.repositories.WorkOrderRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -21,6 +23,9 @@ class WorkOrderServiceTest {
     @Mock
     private WorkOrderRepository workOrderRepository;
 
+    @Mock
+    private WorkOrderMapper workOrderMapper;
+
     @InjectMocks
     private WorkOrderServiceImpl workOrderService;
 
@@ -30,7 +35,11 @@ class WorkOrderServiceTest {
         workOrder.setId(1L);
         when(workOrderRepository.findById(anyLong())).thenReturn(Optional.of(workOrder));
 
-        WorkOrder result = workOrderService.getWorkOrderById(1L);
+        WorkOrderDto workOrderDto = WorkOrderTestData.generatePendingWorkOrderDto();
+        workOrderDto.setId(1L);
+        when(workOrderMapper.workOrderToWorkOrderDto(any(WorkOrder.class))).thenReturn(workOrderDto);
+
+        WorkOrderDto result = workOrderService.getWorkOrderById(1L);
 
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(1L);
@@ -51,12 +60,13 @@ class WorkOrderServiceTest {
         WorkOrder savedWorkOrder = WorkOrderTestData.generatePendingWorkOrder();
         savedWorkOrder.setId(99L);
         when(workOrderRepository.save(any(WorkOrder.class))).thenReturn(savedWorkOrder);
+        when(workOrderMapper.workOrderDtoToWorkOrder(any(WorkOrderDto.class))).thenReturn(savedWorkOrder);
 
-        WorkOrder newWorkOrder = WorkOrderTestData.generatePendingWorkOrder();
+        WorkOrderDto newWorkOrder = WorkOrderTestData.generatePendingWorkOrderDto();
         Long workOrderId = workOrderService.save(newWorkOrder);
 
         assertThat(workOrderId).isNotNull().isEqualTo(99L);
-        verify(workOrderRepository, times(1)).save(newWorkOrder);
+        verify(workOrderRepository, times(1)).save(any(WorkOrder.class));
     }
 
 }
