@@ -22,7 +22,7 @@ public class Customer extends Person {
 
     private LocalDate createdDate;
 
-    @OneToMany(mappedBy = "owner")
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
     private Set<Bike> bikes = new HashSet<>();
 
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
